@@ -1,22 +1,22 @@
 {
-  "name": "ticketbubby-oasis",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@stripe/stripe-js": "^4.3.0",
-    "@stripe/react-stripe-js": "^2.8.0",
-    "stripe": "^16.8.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.0"
-  }
+"name": "ticketbubby-oasis",
+"private": true,
+"version": "1.0.0",
+"type": "module",
+"scripts": {
+"dev": "vite",
+"build": "node ./node_modules/vite/bin/vite.js build",
+"preview": "vite preview"
+},
+"dependencies": {
+"react": "^18.3.1",
+"react-dom": "^18.3.1",
+"@stripe/stripe-js": "^4.3.0",
+"@stripe/react-stripe-js": "^2.8.0",
+"stripe": "^16.8.0"
+},
+"devDependencies": {
+"@vitejs/plugin-react": "^4.3.1",
+"vite": "^5.4.0"
+}
 }
