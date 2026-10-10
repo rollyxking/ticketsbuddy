@@ -1,10 +1,10 @@
 import { fmtDate, money } from "../data.js";
 
-const isToken = (o) => !!o.status; // older demo orders have no status
+const istoken = (o) => !!o.status; // older demo orders have no status
 const BADGE = { "Pending Verification": "wait", Approved: "ok", Rejected: "bad" };
 
 function Ticket({ o }) {
-  const token = isToken(o);
+  const token = istoken(o);
   return (
     <article className={"tix" + (token ? " " + BADGE[o.status] : "")}>
       <div className="tix-top">
@@ -19,7 +19,7 @@ function Ticket({ o }) {
         <div><dt>Tickets</dt><dd>{o.qty} × {o.ticket}</dd></div>
         <div><dt>Name</dt><dd>{o.name}</dd></div>
         <div><dt>{token ? "Total" : "Paid"}</dt><dd>{money(o.total)}</dd></div>
-        <div><dt>Payment</dt><dd>{token ? "Token Image" : o.payment}</dd></div>
+        <div><dt>Payment</dt><dd>{token ? "token Image" : o.payment}</dd></div>
       </dl>
       {o.status === "Pending Verification" && <p className="vmsg">Your token has been submitted and is waiting for manual verification. This page updates automatically.</p>}
       {o.status === "Approved" && <p className="vmsg ok">Your token was verified. Your tickets are confirmed.</p>}
@@ -33,7 +33,7 @@ function Ticket({ o }) {
 export function Confirmation({ orders, id }) {
   const o = orders.find((x) => x.id === id);
   if (!o) return <main className="w co"><p className="empty">Order not found. <a className="lnk" href="#/dashboard">View my tickets</a></p></main>;
-  const approved = !isToken(o) || o.status === "Approved";
+  const approved = !istoken(o) || o.status === "Approved";
   return (
     <main className="w co">
       <h1 className="co-h">

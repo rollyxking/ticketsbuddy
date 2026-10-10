@@ -9,7 +9,7 @@ export const adminEmail = () => process.env.ADMIN_NOTIFY_EMAIL || "emmanuelabioy
 export async function sendMail({ subject, text, html, attachments }) {
   const key = process.env.RESEND_API_KEY;
   // onboarding@resend.dev works without a verified domain (Resend then only delivers to the account owner's email).
-  const from = process.env.MAIL_FROM || "TicketBubby <onboarding@resend.dev>";
+  const from = process.env.MAIL_FROM || "TicketBuddy <onboarding@resend.dev>";
   if (!key) { console.error("[mail] RESEND_API_KEY is not set; email not sent"); return { ok: false, detail: "RESEND_API_KEY is not set on the server." }; }
   try {
     const r = await fetch("https://api.resend.com/emails", {
@@ -39,6 +39,6 @@ export async function notifyAdmin({ orderId, name, amountCents, ticketLine, link
 <tr><td><b>Amount</b></td><td>${esc(amount)}</td></tr>
 <tr><td><b>Tickets</b></td><td>${esc(ticketLine)}</td></tr></table>
 <p><a href="${esc(link)}">Review and Approve / Reject</a> (admin login required)</p>`;
-  const r = await sendMail({ subject: `Token verification needed: ${orderId} (${amount})`, text, html, attachments });
+  const r = await sendMail({ subject: `token verification needed: ${orderId} (${amount})`, text, html, attachments });
   return r.ok;
 }

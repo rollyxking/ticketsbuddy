@@ -95,7 +95,7 @@ export default function Admin({ orderId }) {
   return (
     <main className="w co">
       <div className="row2" style={{ marginTop: 0 }}>
-        <h1 className="co-h">Token verification</h1>
+        <h1 className="co-h">token verification</h1>
         <button className="btn o" onClick={logout}>Sign out</button>
       </div>
       {err && <p className="ck-err" role="alert">{err}</p>}
@@ -117,7 +117,7 @@ export default function Admin({ orderId }) {
                 {sel.decided_at && <><span>Decided</span><b>{new Date(sel.decided_at).toLocaleString()}</b></>}
                 {sel.admin_note && <><span>Rejection note</span><b>{sel.admin_note}</b></>}
               </div>
-              <h3 style={{ margin: "18px 0 8px" }}>Token images</h3>
+              <h3 style={{ margin: "18px 0 8px" }}>token images</h3>
               <div className="adm-imgs">
                 {["front", "back"].map((side) => (
                   <figure key={side} className="adm-fig">

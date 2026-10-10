@@ -68,7 +68,7 @@ export default function App() {
       {p.startsWith("confirmation/") && <Confirmation orders={orders} id={p.split("/")[1]} />}
       {p === "dashboard" && <Orders orders={orders} />}
       {(p === "admin" || p.startsWith("admin/order/")) && <Admin orderId={p.startsWith("admin/order/") ? p.split("/")[2] : null} />}
-      <footer><div className="w">© TicketBubby</div></footer>
+      <footer><div className="w">© TicketBuddy</div></footer>
       <Toast msg={msg} />
     </div>
   );

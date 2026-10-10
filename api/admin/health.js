@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     if ((req.body || {}).action !== "test-mail") return json(res, 400, { error: "Unknown action" });
-    const r = await sendMail({ subject: "TicketBubby test email", text: "If you can read this, order alerts will reach you.", html: "<p>If you can read this, order alerts will reach you.</p>" });
+    const r = await sendMail({ subject: "TicketBuddy test email", text: "If you can read this, order alerts will reach you.", html: "<p>If you can read this, order alerts will reach you.</p>" });
     return json(res, 200, r.ok ? { ok: true, to: adminEmail() } : { ok: false, detail: r.detail, status: r.status });
   }
   if (req.method !== "GET") return json(res, 405, { error: "Method not allowed" });

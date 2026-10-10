@@ -128,7 +128,7 @@ export default function OasisTickets() {
     <div className="page">
       <div className="top">
         <div className="w nav">
-          <a className="logo" href="/">TicketBubby</a>
+          <a className="logo" href="/">TicketBuddy</a>
           <ul className="links">
             {["Concerts", "Sports", "Arts, Theater & Comedy", "Family", "Cities", "More"].map((n) => (
               <li key={n}><a href="#">{n}</a></li>
@@ -279,7 +279,7 @@ export default function OasisTickets() {
         </div>
       </div></section>
 
-      <footer><div className="w">TicketBubby · sample data for layout preview</div></footer>
+      <footer><div className="w">TicketBuddy · sample data for layout preview</div></footer>
     </div>
   );
 }

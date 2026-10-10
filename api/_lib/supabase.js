@@ -4,7 +4,7 @@ function cfg() {
   const url = (process.env.SUPABASE_URL || "").trim().replace(/\/+$/, "").replace(/\/(rest|storage)\/v1$/, "");
   const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   if (!url || !key) throw new Error("not_configured");
-  return { url, key, bucket: process.env.TOKEN_BUCKET || "token-images" };
+  return { url, key, bucket: process.env.token_BUCKET || "token-images" };
 }
 
 // Legacy keys are JWTs (eyJ...) and go in both headers. New-style secret keys (sb_secret_...)

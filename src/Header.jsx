@@ -7,7 +7,7 @@ export default function Header({ showSearch, filters, setFilters, notify }) {
   return (
     <div className="top">
       <div className="w nav">
-        <a className="logo" href="#/">TicketBubby</a>
+        <a className="logo" href="#/">TicketBuddy</a>
         <ul className="links">
           {NAV.map((n) => (
             <li key={n}>
@@ -18,7 +18,7 @@ export default function Header({ showSearch, filters, setFilters, notify }) {
             </li>
           ))}
         </ul>
-        <a className="dash" href="#/dashboard">⌕ Dashboard</a>
+        <a className="dash" href="#/dashboard">🎟 Dashboard</a>
       </div>
       {showSearch && (
         <div className="w srow">

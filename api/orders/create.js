@@ -53,7 +53,7 @@ export default async function handler(req, res) {
   if (back.error) return json(res, back.status, { error: back.error });
 
   const orderId = newOrderId();
-  const accessToken = crypto.randomBytes(24).toString("hex"); // lets the customer (only) check this order's status
+  const accesstoken = crypto.randomBytes(24).toString("hex"); // lets the customer (only) check this order's status
   const frontPath = `orders/${orderId}/front-${crypto.randomBytes(16).toString("hex")}.${front.ext}`;
   const backPath = `orders/${orderId}/back-${crypto.randomBytes(16).toString("hex")}.${back.ext}`;
 
@@ -77,7 +77,7 @@ export default async function handler(req, res) {
       status: "Pending Verification",
       token_image_path: frontPath,
       token_back_image_path: backPath,
-      access_token_hash: sha256(accessToken),
+      access_token_hash: sha256(accesstoken),
     });
   } catch (e) {
     console.error("[orders] saving order failed:", e.message, e.detail || "");
@@ -95,5 +95,5 @@ export default async function handler(req, res) {
     ],
   });
 
-  return json(res, 201, { orderId, accessToken, status: "Pending Verification", total: priced.amountCents / 100 });
+  return json(res, 201, { orderId, accesstoken, status: "Pending Verification", total: priced.amountCents / 100 });
 }
