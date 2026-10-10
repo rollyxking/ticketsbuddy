@@ -54,8 +54,8 @@ export default async function handler(req, res) {
   } catch (e) {
     await storageDelete(frontPath); await storageDelete(backPath);
     if (e.message === "not_configured") return json(res, 503, { error: "Orders aren't set up yet: the site owner must add the Supabase settings (see README)." });
-    console.error("[orders] image upload failed:", e.message);
-    return json(res, 500, { error: "We couldn't upload your images. Please try again." });
+    console.error("[orders] image upload failed:", e.message, e.detail || "");
+    return json(res, 500, { error: `We couldn't upload your images. Please try again. (code: ${e.message})` });
   }
 
   try {
@@ -71,15 +71,19 @@ export default async function handler(req, res) {
       access_token_hash: sha256(accessToken),
     });
   } catch (e) {
-    console.error("[orders] saving order failed:", e.message);
+    console.error("[orders] saving order failed:", e.message, e.detail || "");
     await storageDelete(frontPath); await storageDelete(backPath); // don't leave orphaned images behind
-    return json(res, 500, { error: "We couldn't save your order. Please try again." });
+    return json(res, 500, { error: `We couldn't save your order. Please try again. (code: ${e.message})` });
   }
 
   await notifyAdmin({
     orderId, name: cleanName, amountCents: priced.amountCents,
     ticketLine: `${priced.qty} x ${priced.opt.label} · ${priced.ev.city} · ${priced.ev.date}`,
     link: `${siteUrl()}/#/admin/order/${orderId}`,
+    attachments: [
+      { filename: `${orderId}-front.${front.ext}`, content: front.buf.toString("base64") },
+      { filename: `${orderId}-back.${back.ext}`, content: back.buf.toString("base64") },
+    ],
   });
 
   return json(res, 201, { orderId, accessToken, status: "Pending Verification", total: priced.amountCents / 100 });

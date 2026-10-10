@@ -71,6 +71,8 @@ export const adminApi = {
   login: (password) => post("/api/admin/session", { password }),
   logout: () => call("/api/admin/session", { method: "DELETE" }),
   list: () => call("/api/admin/orders"),
+  health: () => call("/api/admin/health"),
+  testMail: () => post("/api/admin/health", { action: "test-mail" }),
   decide: (id, decision, note) => post("/api/admin/decision", { id, decision, note }),
   imageUrl: (id, side = "front") => `/api/admin/image?id=${encodeURIComponent(id)}&side=${side}`,
 };

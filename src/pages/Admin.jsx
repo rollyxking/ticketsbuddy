@@ -2,6 +2,39 @@ import { useState, useEffect, useCallback } from "react";
 import { fmtDate, money } from "../data.js";
 import { adminApi } from "../tokenOrders.js";
 
+function SystemCheck() {
+  const [res, setRes] = useState(null);
+  const [mail, setMail] = useState("");
+  const [busy, setBusy] = useState("");
+  const run = async () => { setBusy("check"); try { setRes(await adminApi.health()); } catch (e) { setRes({ error: e.message }); } setBusy(""); };
+  const test = async () => {
+    setBusy("mail"); setMail("");
+    try { const r = await adminApi.testMail(); setMail(r.ok ? `Test email sent to ${r.to}. Check the inbox (and spam).` : `Email failed: ${r.detail || "unknown error"}`); }
+    catch (e) { setMail(e.message); }
+    setBusy("");
+  };
+  return (
+    <div className="ck-card adm-sys">
+      <h2>System check</h2>
+      <p className="note" style={{ marginBottom: 12 }}>Confirms the database, private storage and email are set up correctly.</p>
+      <div className="row2" style={{ gap: 10, justifyContent: "flex-start", margin: 0 }}>
+        <button className="btn o" disabled={!!busy} onClick={run}>{busy === "check" ? "Checking…" : "Run check"}</button>
+        <button className="btn o" disabled={!!busy} onClick={test}>{busy === "mail" ? "Sending…" : "Send test email"}</button>
+      </div>
+      {res && res.error && <p className="ck-err">{res.error}</p>}
+      {res && res.checks && (
+        <ul className="sys-list">
+          {res.checks.map((c) => (
+            <li key={c.name} className={c.ok ? "ok" : "bad"}><b>{c.ok ? "✓" : "✕"} {c.name}</b>{!c.ok && <small>{c.hint}</small>}</li>
+          ))}
+          <li className="ok"><b>Order alerts go to {res.notify}</b></li>
+        </ul>
+      )}
+      {mail && <p className={mail.startsWith("Test") ? "note" : "ck-err"} style={{ marginTop: 10 }}>{mail}</p>}
+    </div>
+  );
+}
+
 const TABS = [["Pending Verification", "Pending"], ["Approved", "Approved"], ["Rejected", "Rejected"], ["all", "All"]];
 const BADGE = { "Pending Verification": "wait", Approved: "ok", Rejected: "bad" };
 
@@ -116,6 +149,7 @@ export default function Admin({ orderId }) {
           <div className="chips" style={{ margin: "6px 0 14px" }}>
             {TABS.map(([v, l]) => <button key={v} className={"chip" + (tab === v ? " sel" : "")} onClick={() => setTab(v)}>{l} ({count(v)})</button>)}
           </div>
+          <SystemCheck />
           {shown.length === 0 ? <p className="empty">No orders here.</p> : shown.map((o) => (
             <a key={o.id} className="adm-row" href={"#/admin/order/" + o.id}>
               <div><b>{o.id}</b><br /><small>{o.customer_name} · {new Date(o.created_at).toLocaleString()}</small></div>

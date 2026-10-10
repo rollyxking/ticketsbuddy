@@ -4,18 +4,29 @@ const isToken = (o) => !!o.status; // older demo orders have no status
 const BADGE = { "Pending Verification": "wait", Approved: "ok", Rejected: "bad" };
 
 function Ticket({ o }) {
+  const token = isToken(o);
   return (
-    <div className="tix">
-      <div><small>Order</small><b>{o.id}</b></div>
-      {isToken(o) && <p style={{ margin: "8px 0 0" }}><span className={"badge " + BADGE[o.status]}>{o.status}</span></p>}
+    <article className={"tix" + (token ? " " + BADGE[o.status] : "")}>
+      <div className="tix-top">
+        <div><small>Order</small><b>{o.id}</b></div>
+        {token && <span className={"badge " + BADGE[o.status]}>{o.status}</span>}
+      </div>
       <h3>Oasis Live '27</h3>
-      <p>{o.venue}, {o.city}<br />{fmtDate(o.date)} · {o.time}</p>
-      <p>{o.qty} × {o.ticket}<br />Name: {o.name}<br />{isToken(o) ? `Total ${money(o.total)} · Payment: Token Image` : `Paid ${money(o.total)} with ${o.payment}`}</p>
-      {o.status === "Pending Verification" && <p className="vmsg">Your token image has been submitted and is waiting for manual verification. This page updates automatically.</p>}
+      <p className="tix-where">{o.venue}, {o.city}</p>
+      <dl className="tix-facts">
+        <div><dt>Date</dt><dd>{fmtDate(o.date)}</dd></div>
+        <div><dt>Time</dt><dd>{o.time}</dd></div>
+        <div><dt>Tickets</dt><dd>{o.qty} × {o.ticket}</dd></div>
+        <div><dt>Name</dt><dd>{o.name}</dd></div>
+        <div><dt>{token ? "Total" : "Paid"}</dt><dd>{money(o.total)}</dd></div>
+        <div><dt>Payment</dt><dd>{token ? "Token Image" : o.payment}</dd></div>
+      </dl>
+      {o.status === "Pending Verification" && <p className="vmsg">Your token has been submitted and is waiting for manual verification. This page updates automatically.</p>}
+      {o.status === "Approved" && <p className="vmsg ok">Your token was verified. Your tickets are confirmed.</p>}
       {o.status === "Rejected" && (
-        <p className="vmsg bad">Your submission was rejected{o.note ? `: ${o.note}` : "."} <a className="lnk noprint" href={"#/checkout"}>Submit a new order</a></p>
+        <p className="vmsg bad">Your submission was rejected{o.note ? `: ${o.note}` : "."} <a className="lnk noprint" href="#/checkout">Submit a new order</a></p>
       )}
-    </div>
+    </article>
   );
 }
 
@@ -28,13 +39,13 @@ export function Confirmation({ orders, id }) {
       <h1 className="co-h">
         {approved ? "You're going! 🎸" : o.status === "Rejected" ? "Submission rejected" : "Order received ✅"}
       </h1>
-      <p className="note">
+      <p className="note co-sub">
         {approved ? `Your receipt will be sent to ${o.email}.`
-          : o.status === "Rejected" ? "We couldn't verify your token image."
-          : "We've received your token image. Your tickets are confirmed once our team verifies it."}
+          : o.status === "Rejected" ? "We couldn't verify your token."
+          : "We've received your token. Your tickets are confirmed once our team verifies it."}
       </p>
       <Ticket o={o} />
-      <div className="row2 noprint" style={{ justifyContent: "flex-start", gap: 12 }}>
+      <div className="co-actions noprint">
         {approved && <button className="btn" onClick={() => window.print()}>Download ticket (print / save as PDF)</button>}
         <a className="btn o" href="#/dashboard">My tickets</a>
         <a className="btn o" href="#/">Back to Oasis</a>
@@ -44,14 +55,25 @@ export function Confirmation({ orders, id }) {
 }
 
 export function Orders({ orders }) {
+  const pending = orders.filter((o) => o.status === "Pending Verification").length;
   return (
     <main className="w co">
       <h1 className="co-h">My tickets</h1>
+      {orders.length > 0 && (
+        <p className="note co-sub">{orders.length} order{orders.length > 1 ? "s" : ""}{pending ? ` · ${pending} waiting for verification` : ""}</p>
+      )}
       {orders.length === 0 ? (
         <p className="empty">You haven't bought any tickets yet.<br /><a className="btn" style={{ display: "inline-block", marginTop: 12 }} href="#/">Browse events</a></p>
-      ) : orders.map((o) => (
-        <div key={o.id}><Ticket o={o} /><p className="noprint"><a className="lnk" href={"#/confirmation/" + o.id}>Open ticket</a></p></div>
-      ))}
+      ) : (
+        <div className="tix-grid">
+          {orders.map((o) => (
+            <div key={o.id} className="tix-wrap">
+              <Ticket o={o} />
+              <p className="noprint tix-open"><a className="btn o" href={"#/confirmation/" + o.id}>Open ticket</a></p>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }
