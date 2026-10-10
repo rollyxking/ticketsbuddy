@@ -12,6 +12,19 @@ function cfg() {
 const isJwt = (k) => k.split(".").length === 3;
 const auth = (key, extra = {}) => ({ apikey: key, ...(isJwt(key) ? { Authorization: `Bearer ${key}` } : {}), ...extra });
 
+// What kind of key is configured? Only "service_role" / "secret" keys may write to private storage.
+export function keyKind() {
+  const k = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+  if (!k) return "missing";
+  if (k.startsWith("sb_secret_")) return "secret";
+  if (k.startsWith("sb_publishable_")) return "publishable";
+  if (isJwt(k)) {
+    try { return JSON.parse(Buffer.from(k.split(".")[1], "base64url").toString()).role || "unknown"; } catch { return "unknown"; }
+  }
+  return "unknown";
+}
+export const keyIsServerKey = () => ["secret", "service_role", "unknown"].includes(keyKind());
+
 async function fail(prefix, r) {
   const e = new Error(prefix + "_" + r.status);
   e.detail = (await r.text().catch(() => "")).slice(0, 300);

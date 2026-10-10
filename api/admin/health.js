@@ -2,7 +2,7 @@
 // POST /api/admin/health {action:"test-mail"} -> sends a test email to the admin address
 import { json } from "../_lib/http.js";
 import { isAdmin } from "../_lib/adminAuth.js";
-import { dbSelect, storageBucketInfo } from "../_lib/supabase.js";
+import { dbSelect, storageBucketInfo, keyKind, keyIsServerKey } from "../_lib/supabase.js";
 import { sendMail, adminEmail } from "../_lib/mail.js";
 
 export default async function handler(req, res) {
@@ -20,6 +20,9 @@ export default async function handler(req, res) {
   const url = process.env.SUPABASE_URL || "";
   add("SUPABASE_URL is set", !!url, "Add SUPABASE_URL (Supabase > Settings > API > Project URL) in Vercel and redeploy.");
   add("SUPABASE_SERVICE_ROLE_KEY is set", !!process.env.SUPABASE_SERVICE_ROLE_KEY, "Add the service_role (or secret) key in Vercel and redeploy.");
+
+  add("Supabase URL looks right", !url || /^https:\/\/[a-z0-9-]+\.supabase\.(co|in|net)\/?$/i.test(url.trim()), "It should look like https://abcdxyz.supabase.co (Settings > API > Project URL), with nothing after .co");
+  add("Key is a server key (service_role / secret)", keyIsServerKey(), `The key in SUPABASE_SERVICE_ROLE_KEY is the ${keyKind()} key. Copy the service_role (legacy) or secret key instead, update it in Vercel and redeploy.`);
 
   const code = (e) => `${e.message}${e.detail ? " – " + e.detail : ""}`;
   try {

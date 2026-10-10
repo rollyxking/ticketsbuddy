@@ -5,7 +5,7 @@
 import crypto from "node:crypto";
 import { json, sha256, newOrderId, siteUrl } from "../_lib/http.js";
 import { priceOrder } from "../_lib/pricing.js";
-import { dbInsert, storagePut, storageDelete } from "../_lib/supabase.js";
+import { dbInsert, storagePut, storageDelete, keyIsServerKey } from "../_lib/supabase.js";
 import { notifyAdmin } from "../_lib/mail.js";
 
 // Two images share Vercel's 4.5 MB request limit, so each is capped at 1.5 MB (the browser shrinks bigger photos first).
@@ -25,6 +25,15 @@ function readImage(img, label) {
   const ext = isJpeg(buf) ? "jpg" : isPng(buf) ? "png" : null; // real file signature, not the declared type
   if (!ext) return { status: 400, error: `The ${label} file isn't a valid JPG or PNG image.` };
   return { buf, ext, contentType: ext === "jpg" ? "image/jpeg" : "image/png" };
+}
+
+// Turns a Supabase failure into something the site owner can act on (no secrets are ever included).
+function explain(what, e) {
+  if (!keyIsServerKey()) {
+    return "Setup problem: SUPABASE_SERVICE_ROLE_KEY is the public (anon/publishable) key. Replace it in Vercel with the service_role / secret key, then redeploy.";
+  }
+  const why = String(e.detail || "").replace(/[\r\n]+/g, " ").replace(/\s+/g, " ").slice(0, 160);
+  return `We couldn't ${what}. Please try again. (code: ${e.message}${why ? " | " + why : ""})`;
 }
 
 export default async function handler(req, res) {
@@ -55,7 +64,7 @@ export default async function handler(req, res) {
     await storageDelete(frontPath); await storageDelete(backPath);
     if (e.message === "not_configured") return json(res, 503, { error: "Orders aren't set up yet: the site owner must add the Supabase settings (see README)." });
     console.error("[orders] image upload failed:", e.message, e.detail || "");
-    return json(res, 500, { error: `We couldn't upload your images. Please try again. (code: ${e.message})` });
+    return json(res, 500, { error: explain("upload your images", e) });
   }
 
   try {
@@ -73,7 +82,7 @@ export default async function handler(req, res) {
   } catch (e) {
     console.error("[orders] saving order failed:", e.message, e.detail || "");
     await storageDelete(frontPath); await storageDelete(backPath); // don't leave orphaned images behind
-    return json(res, 500, { error: `We couldn't save your order. Please try again. (code: ${e.message})` });
+    return json(res, 500, { error: explain("save your order", e) });
   }
 
   await notifyAdmin({
