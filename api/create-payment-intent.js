@@ -1,7 +1,7 @@
 // Vercel serverless function. The amount is calculated here from your own price list,
 // never trusted from the browser. Requires STRIPE_SECRET_KEY in your environment.
 import Stripe from "stripe";
-import { ALL, PRICES, VIPS, VIP_PRICES } from "../src/data.js";
+import { ALL, PRICES, VIPS, VIP_PRICES, FEE_PER_TICKET } from "../src/data.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid order" });
   }
 
-  const amount = Math.round(opt.price * q * 110); // price x qty + 10% service fee, in cents
+  const amount = Math.round((opt.price + FEE_PER_TICKET) * q * 100); // (price + $10 fee) x qty, in cents
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const pi = await stripe.paymentIntents.create({

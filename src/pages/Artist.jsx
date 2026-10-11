@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SECTIONS, US, INTL, ALL, VIPS, VIP_PRICES, TOUR, SETLIST, FAQS, REVIEWS, MORE_REVIEWS, FANS, DAYS, MONTHS, applyFilters, money } from "../data.js";
+import { SECTIONS, US, INTL, ALL, VIPS, VIP_PRICES, FEE_PER_TICKET, TOUR, SETLIST, FAQS, REVIEWS, MORE_REVIEWS, FANS, DAYS, MONTHS, applyFilters, money } from "../data.js";
 import { HERO, VIP_IMG, NEWS_IMG, FAN_IMGS } from "../images.js";
 import { MONTH_OPTS } from "../Header.jsx";
 import { Modal } from "../ui.jsx";
@@ -167,7 +167,7 @@ export default function Artist({ filters, setFilters, notify }) {
                   <ul>{items.map((x) => <li key={x}>{x}</li>)}</ul>
                   {vipOpen[i] && <p className="note">Pick your show at checkout. Package perks are confirmed on your ticket.</p>}
                   <div className="row2">
-                    <span className="price">from {money(VIP_PRICES[i])}</span>
+                    <span className="price">from {money(VIP_PRICES[i] + FEE_PER_TICKET)}</span>
                     <button className="btn" onClick={() => buy(ALL[0].id, i)}>Buy Ticket</button>
                   </div>
                   <p><button className="lnk" onClick={() => setVipOpen({ ...vipOpen, [i]: !vipOpen[i] })}>{vipOpen[i] ? "Show less" : "Read More"}</button></p>

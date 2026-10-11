@@ -64,11 +64,12 @@ export const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "
 
 
 export const PRICES = [
-  { id: "ga", label: "General Admission (Standing)", price: 119 },
-  { id: "res", label: "Reserved Seat", price: 159 },
-  { id: "prem", label: "Premium Reserved Seat", price: 229 },
+  { id: "ga", label: "General Admission (Standing)", price: 190 },
+  { id: "res", label: "Reserved Seat", price: 190 },
+  { id: "prem", label: "Premium Reserved Seat", price: 190 },
 ]; // sample prices: replace with your real pricing
-export const VIP_PRICES = [349, 429, 279, 299];
+export const VIP_PRICES = [190, 190, 190, 190];
+export const FEE_PER_TICKET = 10; // flat service fee per ticket: $190 + $10 = $200
 
 const toEv = ([date, city, venue, time]) => ({ id: date + "-" + city.split(",")[0].replace(/\s/g, ""), date, city, venue, time });
 export const US = US_EVENTS.map(toEv);

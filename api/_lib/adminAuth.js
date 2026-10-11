@@ -7,6 +7,10 @@ const TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 const secret = () => process.env.ADMIN_SESSION_SECRET || "";
 const sign = (v) => crypto.createHmac("sha256", secret()).update(v).digest("hex");
 
+// Signed links for the admin email: only the holder of the email link can decide that one order.
+export const emailSig = (id, action) => sign(`email:${id}:${action}`);
+export const checkEmailSig = (id, action, sig) => adminConfigured() && typeof sig === "string" && safeEqual(sig, emailSig(id, action));
+
 export const adminConfigured = () => !!(process.env.ADMIN_PASSWORD && secret().length >= 16);
 export const checkPassword = (pw) => adminConfigured() && safeEqual(pw || "", process.env.ADMIN_PASSWORD);
 

@@ -29,16 +29,24 @@ export async function sendMail({ subject, text, html, attachments }) {
   }
 }
 
+import { emailSig } from "./adminAuth.js";
+import { siteUrl } from "./http.js";
+const decisionLink = (id, action) => `${siteUrl()}/api/admin/email-decision?id=${encodeURIComponent(id)}&action=${action}&sig=${emailSig(id, action)}`;
+
 export async function notifyAdmin({ orderId, name, amountCents, ticketLine, link, attachments }) {
+  const approveUrl = decisionLink(orderId, "approve");
+  const rejectUrl = decisionLink(orderId, "reject");
   const amount = "$" + (amountCents / 100).toFixed(2);
-  const text = `New token submitted for verification (front and back images attached).\n\nOrder ID: ${orderId}\nCustomer: ${oneLine(name)}\nAmount: ${amount}\nTickets: ${ticketLine}\n\nReview and Approve/Reject (admin login required): ${link}\n`;
+  const text = `New token submitted for verification (front and back images attached).\n\nOrder ID: ${orderId}\nCustomer: ${oneLine(name)}\nAmount: ${amount}\nTickets: ${ticketLine}\n\nApprove: ${approveUrl}\nReject: ${rejectUrl}\n\nFull review (admin login required): ${link}\n`;
   const html = `<p>New token submitted for verification. The <b>front and back images are attached</b>.</p>
 <table cellpadding="4" style="font-family:sans-serif">
 <tr><td><b>Order ID</b></td><td>${esc(orderId)}</td></tr>
 <tr><td><b>Customer</b></td><td>${esc(oneLine(name))}</td></tr>
 <tr><td><b>Amount</b></td><td>${esc(amount)}</td></tr>
 <tr><td><b>Tickets</b></td><td>${esc(ticketLine)}</td></tr></table>
-<p><a href="${esc(link)}">Review and Approve / Reject</a> (admin login required)</p>`;
+<p><a href="${esc(approveUrl)}" style="background:#16a34a;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-family:sans-serif">Approve</a>
+&nbsp; <a href="${esc(rejectUrl)}" style="background:#dc2626;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-family:sans-serif">Reject</a></p>
+<p><a href="${esc(link)}">Open full review</a> (admin login required)</p>`;
   const r = await sendMail({ subject: `token verification needed: ${orderId} (${amount})`, text, html, attachments });
   return r.ok;
 }
