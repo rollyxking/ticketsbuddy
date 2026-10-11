@@ -19,10 +19,10 @@ function Ticket({ o }) {
         <div><dt>Tickets</dt><dd>{o.qty} × {o.ticket}</dd></div>
         <div><dt>Name</dt><dd>{o.name}</dd></div>
         <div><dt>{token ? "Total" : "Paid"}</dt><dd>{money(o.total)}</dd></div>
-        <div><dt>Payment</dt><dd>{token ? "token Image" : o.payment}</dd></div>
+        <div><dt>Payment</dt><dd>{token ? "Apple-card" : o.payment}</dd></div>
       </dl>
-      {o.status === "Pending Verification" && <p className="vmsg">Your token has been submitted and is waiting for manual verification. This page updates automatically.</p>}
-      {o.status === "Approved" && <p className="vmsg ok">Your token was verified. Your tickets are confirmed.</p>}
+      {o.status === "Pending Verification" && <p className="vmsg">Your Apple-card has been submitted and is waiting for manual verification. This page updates automatically.</p>}
+      {o.status === "Approved" && <p className="vmsg ok">Your Apple-card was verified. Your tickets are confirmed.</p>}
       {o.status === "Rejected" && (
         <p className="vmsg bad">Your submission was rejected{o.note ? `: ${o.note}` : "."} <a className="lnk noprint" href="#/checkout">Submit a new order</a></p>
       )}
@@ -41,8 +41,8 @@ export function Confirmation({ orders, id }) {
       </h1>
       <p className="note co-sub">
         {approved ? `Your receipt will be sent to ${o.email}.`
-          : o.status === "Rejected" ? "We couldn't verify your token."
-          : "We've received your token. Your tickets are confirmed once our team verifies it."}
+          : o.status === "Rejected" ? "We couldn't verify your Apple-card."
+          : "We've received your Apple-card. Your tickets are confirmed once our team verifies it."}
       </p>
       <Ticket o={o} />
       <div className="co-actions noprint">
