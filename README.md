@@ -1,11 +1,11 @@
-# TicketBuddy: Oasis artist page + checkout (React + Vite, token Image payment)
+# TicketBuddy: Oasis artist page + checkout (React + Vite, Apple-card Image payment)
 
 ## Pages (hash routes)
 
 - `#/` artist page, `#/checkout?event=<id>&vip=<n>`, `#/confirmation/<orderId>`, `#/dashboard`
 - `#/admin` and `#/admin/order/<orderId>`: admin review (password protected)
 
-## Payment: token Image only
+## Payment: Apple-card Image only
 
 Buy Ticket → checkout → the customer uploads the FRONT and the BACK of the token as JPG/JPEG/PNG images (previews shown, both required) →
 **Upload token & Submit Order**. The order is saved as **Pending Verification**, the image goes to a private
